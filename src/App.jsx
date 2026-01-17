@@ -36,18 +36,30 @@ function App() {
     const [demoImage, setDemoImage] = useState(null);
 
     const handleDemoClick = (file) => {
-        if (isScanning) return;
+        console.log('App: handleDemoClick called with file:', file);
+        if (isScanning) {
+            console.log('App: Scan in progress, ignoring.');
+            return;
+        }
 
         if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setDemoImage(imageUrl);
+            try {
+                const imageUrl = URL.createObjectURL(file);
+                console.log('App: Created Blob URL:', imageUrl);
+                setDemoImage(imageUrl);
+            } catch (error) {
+                console.error('App: Failed to create ObjectURL:', error);
+                setDemoImage('/example_label.png');
+            }
         } else {
+            console.log('App: No file provided, using default example.');
             setDemoImage('/example_label.png');
         }
         handleScanClick();
     };
 
     const handleScanClick = () => {
+        console.log('App: handleScanClick initiated.');
         if (isScanning) return;
 
         setIsScanning(true);
@@ -55,6 +67,7 @@ function App() {
 
         // Simulate scanning delay
         setTimeout(() => {
+            console.log('App: Triggering performScan after delay.');
             performScan();
         }, 2000);
     };
