@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
-function ActionButtons({ onScanClick, onDailyIntakeClick, onAlertsClick, isScanning, nutritionData }) {
+function ActionButtons({ onScanClick, onDemoClick, onDailyIntakeClick, onAlertsClick, isScanning, nutritionData }) {
     const [dailyIntake, setDailyIntake] = useState(65);
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         if (nutritionData?.dailyIntake) {
@@ -9,19 +10,36 @@ function ActionButtons({ onScanClick, onDailyIntakeClick, onAlertsClick, isScann
         }
     }, [nutritionData]);
 
+    const handleDemoButtonClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = (event) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            onDemoClick(file);
+        }
+    };
+
     return (
         <div className="action-buttons">
-            <button className="action-btn daily-intake-btn" aria-label="Daily intake" onClick={onDailyIntakeClick}>
+            <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                accept="image/*"
+                onChange={handleFileChange}
+            />
+
+            <button className="action-btn demo-btn" aria-label="Try demo" onClick={handleDemoButtonClick}>
                 <div className="btn-icon">
                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                        <path d="M6 12H26M6 16H26M6 20H26" stroke="#2196F3" strokeWidth="2" strokeLinecap="round" />
-                        <rect x="4" y="8" width="24" height="16" rx="2" stroke="#2196F3" strokeWidth="2" />
+                        <path d="M4 8C4 6.89543 4.89543 6 6 6H26C27.1046 6 28 6.89543 28 8V24C28 25.1046 27.1046 26 26 26H6C4.89543 26 4 25.1046 4 24V8Z" stroke="#2196F3" strokeWidth="2" />
+                        <path d="M4 20L10 14L16 20L22 14L28 20" stroke="#2196F3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <circle cx="10" cy="11" r="2" fill="#2196F3" />
                     </svg>
                 </div>
-                <span className="btn-label">DAILY INTAKE</span>
-                <div className="progress-bar">
-                    <div className="progress-fill" style={{ width: `${dailyIntake}%` }}></div>
-                </div>
+                <span className="btn-label">TRY DEMO</span>
             </button>
 
             <button

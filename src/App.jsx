@@ -33,6 +33,19 @@ function App() {
     const [showResults, setShowResults] = useState(false);
     const [instruction, setInstruction] = useState('Align the nutrition label within the frame');
     const [nutritionData, setNutritionData] = useState(null);
+    const [demoImage, setDemoImage] = useState(null);
+
+    const handleDemoClick = (file) => {
+        if (isScanning) return;
+
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setDemoImage(imageUrl);
+        } else {
+            setDemoImage('/example_label.png');
+        }
+        handleScanClick();
+    };
 
     const handleScanClick = () => {
         if (isScanning) return;
@@ -65,6 +78,7 @@ function App() {
     const hideResults = () => {
         setShowResults(false);
         setInstruction('Align the nutrition label within the frame');
+        setDemoImage(null);
     };
 
     const handleBackClick = () => {
@@ -97,11 +111,13 @@ function App() {
                 showResults={showResults}
                 nutritionData={nutritionData}
                 isScanning={isScanning}
+                demoImage={demoImage}
             />
 
             <BottomPanel
                 nutritionData={nutritionData}
                 onScanClick={handleScanClick}
+                onDemoClick={handleDemoClick}
                 onDailyIntakeClick={handleDailyIntakeClick}
                 onAlertsClick={handleAlertsClick}
                 isScanning={isScanning}
