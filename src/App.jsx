@@ -3,29 +3,40 @@ import Header from './components/Header.jsx';
 import CameraView from './components/CameraView.jsx';
 import BottomPanel from './components/BottomPanel.jsx';
 
-// Sample nutrition data for demo
-const sampleNutritionData = [
-    {
-        sugar: { level: 'LOW', status: 'success', value: '2g per serving' },
-        salt: { level: 'MEDIUM', status: 'warning', value: '450mg per serving' },
-        diabeticRisk: 'MODERATE RISK',
-        bpWarning: 'MONITOR INTAKE',
-        dailyIntake: 65
+// Scenario-based nutrition data for Hackathon Pitch
+const demoScenarios = {
+    balanced: {
+        id: 'balanced',
+        name: 'Whole Earth Harvest (Balanced)',
+        image: '/example_label.png',
+        data: {
+            sugar: { level: 'LOW', status: 'success', value: '2g per serving' },
+            salt: { level: 'MEDIUM', status: 'warning', value: '120mg per serving' },
+            diabeticRisk: 'LOW RISK',
+            bpWarning: 'SAFE TO CONSUME',
+            dailyIntake: 45
+        }
     },
-    {
-        sugar: { level: 'MEDIUM', status: 'warning', value: '8g per serving' },
-        salt: { level: 'HIGH', status: 'alert', value: '820mg per serving' },
-        diabeticRisk: 'HIGH RISK',
-        bpWarning: 'LIMIT INTAKE',
-        dailyIntake: 78
-    },
-    {
-        sugar: { level: 'LOW', status: 'success', value: '1g per serving' },
-        salt: { level: 'LOW', status: 'success', value: '180mg per serving' },
-        diabeticRisk: 'LOW RISK',
-        bpWarning: 'SAFE TO CONSUME',
-        dailyIntake: 45
+    soda: {
+        id: 'soda',
+        name: 'Fizz Explosion (High Sugar)',
+        image: '/soda_label.png',
+        data: {
+            sugar: { level: 'HIGH', status: 'alert', value: '40g per serving' },
+            salt: { level: 'LOW', status: 'success', value: '20mg per serving' },
+            diabeticRisk: 'EXTREME RISK',
+            bpWarning: 'LIMIT INTAKE',
+            dailyIntake: 92
+        }
     }
+};
+
+const scanningPhrases = [
+    'Detecting nutrition label structure...',
+    'OCR: Extracting ingredient list...',
+    'Analyzing sugar/salt correlations...',
+    'Comparing with health profile guidelines...',
+    'Calculating glycemic index impact...'
 ];
 
 function App() {
@@ -34,58 +45,53 @@ function App() {
     const [instruction, setInstruction] = useState('Align the nutrition label within the frame');
     const [nutritionData, setNutritionData] = useState(null);
     const [demoImage, setDemoImage] = useState(null);
+    const [currentScenario, setCurrentScenario] = useState('balanced');
 
-    const handleDemoClick = (file) => {
-        console.log('App: handleDemoClick called with file:', file);
-        if (isScanning) {
-            console.log('App: Scan in progress, ignoring.');
-            return;
-        }
+    const handleDemoClick = () => {
+        if (isScanning) return;
 
-        if (file) {
-            try {
-                const imageUrl = URL.createObjectURL(file);
-                console.log('App: Created Blob URL:', imageUrl);
-                setDemoImage(imageUrl);
-            } catch (error) {
-                console.error('App: Failed to create ObjectURL:', error);
-                setDemoImage('/example_label.png');
-            }
-        } else {
-            console.log('App: No file provided, using default example.');
-            setDemoImage('/example_label.png');
-        }
-        handleScanClick();
+        // Toggle between scenarios for the pitch
+        const nextScenario = currentScenario === 'balanced' ? 'soda' : 'balanced';
+        setCurrentScenario(nextScenario);
+        setDemoImage(demoScenarios[nextScenario].image);
+
+        handleScanClick(nextScenario);
     };
 
-    const handleScanClick = () => {
-        console.log('App: handleScanClick initiated.');
+    const handleScanClick = (scenarioId) => {
         if (isScanning) return;
 
         setIsScanning(true);
-        setInstruction('Analyzing nutrition label...');
+
+        // Dynamic scanning phrases for pitch
+        let phraseIdx = 0;
+        setInstruction(scanningPhrases[phraseIdx]);
+
+        const phraseInterval = setInterval(() => {
+            phraseIdx++;
+            if (phraseIdx < scanningPhrases.length) {
+                setInstruction(scanningPhrases[phraseIdx]);
+            } else {
+                clearInterval(phraseInterval);
+            }
+        }, 800);
 
         // Simulate scanning delay
         setTimeout(() => {
-            console.log('App: Triggering performScan after delay.');
-            performScan();
-        }, 2000);
+            clearInterval(phraseInterval);
+            performScan(scenarioId);
+        }, 4000); // Longer scan for better "AI" feel in pitch
     };
 
-    const performScan = () => {
-        // Get random nutrition data
-        const randomData = sampleNutritionData[Math.floor(Math.random() * sampleNutritionData.length)];
+    const performScan = (scenarioId) => {
+        const scenario = scenarioId ? demoScenarios[scenarioId] : demoScenarios.balanced;
+        const data = scenario.data;
 
         // Update state with results
-        setNutritionData(randomData);
+        setNutritionData(data);
         setShowResults(true);
-        setInstruction('Scan complete! Review results');
+        setInstruction(`${scenario.name} identified!`);
         setIsScanning(false);
-
-        // Auto-hide results after 5 seconds
-        setTimeout(() => {
-            hideResults();
-        }, 5000);
     };
 
     const hideResults = () => {
