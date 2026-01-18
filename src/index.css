@@ -31,7 +31,7 @@
     --glass-border: rgba(255, 255, 255, 0.3);
 
     /* Typography */
-    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
