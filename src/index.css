@@ -756,3 +756,142 @@ button:focus-visible {
     transform: scale(1.05) translateY(-2px);
     box-shadow: 0 8px 25px rgba(33, 150, 243, 0.6);
 }
+
+/* ========================================
+   Critical Health Alert Overlay
+   ======================================== */
+.critical-alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.critical-alert-content {
+    background: var(--white);
+    width: 100%;
+    max-width: 360px;
+    border-radius: 24px;
+    padding: 30px;
+    text-align: center;
+    border: 4px solid var(--alert-red);
+    box-shadow: 0 0 50px rgba(244, 67, 54, 0.5);
+}
+
+.pulse-alert {
+    animation: alertPulse 2s infinite;
+}
+
+@keyframes alertPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 50px rgba(244, 67, 54, 0.5);
+    }
+
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 0 80px rgba(244, 67, 54, 0.8);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 50px rgba(244, 67, 54, 0.5);
+    }
+}
+
+.alert-header h2 {
+    color: var(--alert-red);
+    font-size: 24px;
+    font-weight: 800;
+    margin-top: 15px;
+    letter-spacing: 1px;
+}
+
+.primary-warning {
+    background: var(--alert-red);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    margin: 20px 0 15px 0;
+    font-size: 14px;
+}
+
+.detailed-warning {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text-dark);
+}
+
+.alert-guidance {
+    margin-top: 25px;
+    text-align: left;
+    background: var(--light-gray);
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.alert-guidance h3 {
+    font-size: 12px;
+    color: var(--dark-gray);
+    margin-bottom: 10px;
+}
+
+.alert-guidance ul {
+    padding-left: 20px;
+}
+
+.alert-guidance li {
+    font-size: 13px;
+    margin-bottom: 8px;
+    color: var(--text-dark);
+}
+
+.dismiss-alert-btn {
+    margin-top: 30px;
+    width: 100%;
+    background: var(--text-dark);
+    color: white;
+    padding: 16px;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: var(--transition-smooth);
+}
+
+.dismiss-alert-btn:hover {
+    background: black;
+    transform: translateY(-2px);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Red Flush Animation for App Container */
+.app-container.critical-mode {
+    animation: screenFlush 1s infinite alternate;
+}
+
+@keyframes screenFlush {
+    from {
+        box-shadow: inset 0 0 0px var(--alert-red);
+    }
+
+    to {
+        box-shadow: inset 0 0 100px rgba(244, 67, 54, 0.3);
+    }
+}

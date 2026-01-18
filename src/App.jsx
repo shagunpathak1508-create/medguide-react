@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Header from './components/Header.jsx';
 import CameraView from './components/CameraView.jsx';
 import BottomPanel from './components/BottomPanel.jsx';
+import CriticalHealthAlert from './components/CriticalHealthAlert.jsx';
 
 // Scenario-based nutrition data for Hackathon Pitch
 const demoScenarios = {
@@ -46,6 +47,7 @@ function App() {
     const [nutritionData, setNutritionData] = useState(null);
     const [demoImage, setDemoImage] = useState(null);
     const [currentScenario, setCurrentScenario] = useState('balanced');
+    const [showCriticalAlert, setShowCriticalAlert] = useState(false);
 
     const handleDemoClick = () => {
         if (isScanning) return;
@@ -92,12 +94,20 @@ function App() {
         setShowResults(true);
         setInstruction(`${scenario.name} identified!`);
         setIsScanning(false);
+
+        // Trigger critical alert for soda scenario
+        if (scenario.id === 'soda') {
+            setTimeout(() => {
+                setShowCriticalAlert(true);
+            }, 1000);
+        }
     };
 
     const hideResults = () => {
         setShowResults(false);
         setInstruction('Align the nutrition label within the frame');
         setDemoImage(null);
+        setShowCriticalAlert(false);
     };
 
     const handleBackClick = () => {
@@ -119,7 +129,7 @@ function App() {
     };
 
     return (
-        <div className="app-container">
+        <div className={`app-container ${showCriticalAlert ? 'critical-mode' : ''}`}>
             <Header
                 onBackClick={handleBackClick}
                 onInfoClick={handleInfoClick}
@@ -141,6 +151,13 @@ function App() {
                 onAlertsClick={handleAlertsClick}
                 isScanning={isScanning}
             />
+
+            {showCriticalAlert && (
+                <CriticalHealthAlert
+                    scenario={demoScenarios[currentScenario]}
+                    onClose={() => setShowCriticalAlert(false)}
+                />
+            )}
         </div>
     );
 }
